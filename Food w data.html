@@ -110,7 +110,7 @@ function doSVG() {
     .attr("cx",d=> d.x)
     .attr("cy",d=> d.y)
     .attr("r",d=>SizeScale(d.freq))
-    .attr("fill",d=> color(d.score)-0.15) //update to tweak male and female colours
+    .attr("fill",d=> color(d.score-0.15)) //update to tweak male and female colours
     .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .on("mouseover", handleMouseOver)
     .on("mouseout", handleMouseOut)
