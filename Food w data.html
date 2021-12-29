@@ -92,7 +92,7 @@ color = d3.scaleLinear().domain([0,1]) //need to change this to align with data 
   .range([d3.rgb("#2c8ee5"), d3.rgb('#f0b931')]);
 
 var SizeRange = d3.extent(nodeData, d => d.freq)
-var SizeScale = d3.scaleLinear().domain(SizeRange).range([1,50])
+var SizeScale = d3.scaleLinear().domain(SizeRange).range([5,50])
 
 var ScoreRange = d3.extent(nodeData, d => d.score)
 var ScoreScale = d3.scaleLinear().domain(ScoreRange).range([0,1])
