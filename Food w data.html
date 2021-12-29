@@ -107,8 +107,8 @@ function doSVG() {
     .data(nodeData)
     .enter()
     .append("circle")
-    .attr("cx",d=>0)
-    .attr("cy",d=>0)
+    .attr("cx",d=> d.x)
+    .attr("cy",d=> d.y)
     .attr("r",d=>SizeScale(d.freq))
     .attr("fill",d=> color(d.score))
     .attr("transform", (d) => `translate(${d.x},${d.y})`)
@@ -216,7 +216,7 @@ d3.select("button").on('click', (event) => {
   splashDiv.style.opacity = 0 // transition opacity then remove
   svg.on('mousemove', (event) => {null}) //remove mouse movements
   sim.force('x', d3.forceX().strength(0.2).x(function(d) {
-    return ScoreScale(d.score)*w;
+    return ScoreScale(d.score)*(w-2*wPad)+wPad;
   }))
   .force('attract2', d3.forceAttract()
   .strength(0))
