@@ -146,7 +146,7 @@ function handleMouseOver(event, d) {
       .data(gridData)
       .enter().append("g")//put in a group otherwise it will hide the text
       .append("text")
-      .text(function(d) { return d3.shuffle(d[0])[0:5]; })
+      .text(function(d) { return d3.shuffle(d[0]); })
       .attr("class", "svgText")
       .attr("x", function(d,i) {
          return  rectLen * (i-(Math.floor(i/rectOnRow)*rectOnRow) +1) -rectLen; }
