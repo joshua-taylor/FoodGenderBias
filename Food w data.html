@@ -215,7 +215,7 @@ d3.select("button").on('click', (event) => {
   splashDiv.style.visibility = "hidden" //remove the splashscreen intro text
   splashDiv.style.opacity = 0 // transition opacity then remove
   svg.on('mousemove', (event) => {null}) //remove mouse movements
-  sim.force('x', d3.forceX().strength(0.3).x(function(d) {
+  sim.force('x', d3.forceX().strength(0.7).x(function(d) {
     return ScoreScale(d.score)*(w-2*wPad*2)+wPad*2;
   }))
   .force('attract2', d3.forceAttract()
