@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader&family=Roboto+Slab&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://unpkg.com/d3-force-attract"></script>
@@ -42,6 +42,12 @@
         left: 30%;
         width: 40%;
         transition:  visibility 0.3s, opacity 0.3s linear;
+      }
+      .svgText {
+        font-family: 'Roboto', sans-serif;
+      }
+      h1{
+        font-family: 'Newsreader', serif;
       }
       .textTransparentBackground{
         /* backdrop-filter: blur(20px);
@@ -140,6 +146,7 @@ function handleMouseOver(event, d) {
       .enter().append("g")//put in a group otherwise it will hide the text
       .append("text")
       .text(function(d) { return d[0]; })
+      .attr("class", "svgText")
       .attr("x", function(d,i) {
          return  rectLen * (i-(Math.floor(i/rectOnRow)*rectOnRow) +1) -rectLen; }
        )
