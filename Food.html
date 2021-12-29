@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300&family=Oswald:wght@300;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://unpkg.com/d3-force-attract"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/d3-moveto@0.0.3/build/d3-moveto.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/save-svg-as-png/1.4.17/saveSvgAsPng.min.js" integrity="sha512-vLkvtzbaBvXHQpdTtDT8Gg+vNqXGQ0+vgzoAFzuR6rbQQg+ECaFcjXpTT4EBA46EKACh49lJsBoarn3yYg0S4Q==" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://unpkg.com/jeezy@1.12.13/lib/jeezy.min.js"></script> -->
+    <style>
+
+      body {
+        font-family: 'Newsreader', serif;
+        font-weight: 300;
+        color: white;
+        margin: 0;
+        background: #0F2027;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      }
+      .divInTheMiddle {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 30%;
+        width: 40%;
+        transition:  visibility 0.3s, opacity 0.3s linear;
+      }
+      .divLabel {
+        position: absolute;
+        z-index: 10;
+        top: 15%;
+        left: 30%;
+        width: 40%;
+        transition:  visibility 0.3s, opacity 0.3s linear;
+      }
+      .textTransparentBackground{
+        /* backdrop-filter: blur(20px);
+        backdrop-filter: brightness(60%); */
+        background-color: rgba(44,83,100,0.5);
+      }
+      .header {margin-top: 20px}
+      a { color: inherit; }
+
+    </style>
+  </head>
+  <body>
+
+
+<div class="container-fluid text-center">
+  <div class="header">
+    <h1>Lorum ipsum</h1>
+    <p>Lorum ipsum</p>
+  </div>
+  <div class="row content">
+    <div id="labelDiv" class="divLabel" ></div>
+    <div id="splashDiv" class="divInTheMiddle">
+      <p class="textTransparentBackground">This is a splash screen for introducing the vis. Click the button below to get started.</p>
+    <button id="button" type="button" class="btn btn-outline-light btn-lg">Click to explore</button></div>
+      <div id="wrapper"class="col-lg-12"></div>
+</div>
+
+<footer class="container-fluid text-center tip">
+  <p><a href = ""><u>Josh Taylor 2021</u></a></p>
+</footer>
+    <script>
+
+const wPad = 50
+const hPad = 200
+var w = $(window).width()-wPad;
+var h = $(window).height()-hPad;
+var splash = 1
+
+const NodePadding = 5
+const yellow = d3.interpolateBrBG(0); // "rgb(255, 255, 229)"
+
+// for creating fake example data - to remove
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < d3.randomNormal(12,5)(); i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+const nodeData = [...Array(100)]
+      .map(() => ({
+        x: w * Math.random(), //arbitary starting position
+        y: h * Math.random(), //arbitary starting position
+        x1: w * Math.random(), // actual data point for x axis...
+        label: makeid(),
+        r: Math.max(10, d3.randomNormal(8,5)()),
+      }))
+
+
+
+// to update with real data..
+const textData = [...Array(100)]
+      .map(()=>({
+            name: [makeid(),makeid(),makeid(),],
+            score: [Math.random(),Math.random(),Math.random(),]
+          }))
+
+color = d3.scaleLinear().domain([0,1]) //need to change this to align with data min and max...
+  .interpolate(d3.interpolateLab)
+  .range([d3.rgb("#2c8ee5"), d3.rgb('#f0b931')]);
+
+
+function doSVG() {
+  const svg = d3.select("#wrapper").append("svg")
+  .attr("width",w)
+  .attr("height",h)
+
+  const blipElements = svg.selectAll(".blip")
+    .data(nodeData)
+    .enter()
+    .append("circle")
+    .attr("cx",d=>0)
+    .attr("cy",d=>0)
+    .attr("r",d=>d.r ?? 8)
+    .attr("fill",d=> color(d.x1/w))
+    .attr("transform", (d) => `translate(${d.x},${d.y})`)
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut)
+    .attr("pointer-events", "none")//disable for now
+;
+
+
+// Create Event Handlers for mouse
+
+function handleMouseOver(event, d) {
+    // grid data is an array of objects, one containing a word and the other a score
+     var gridData = d3.zip(textData[d.index].name,textData[d.index].score)
+
+     var rectLen = 100; // the length of the text containers
+     var rowH = 40; // the hight of the row containers for text
+     rectOnRow = Math.floor((w/2)/rectLen) // determins how many text items can fit on each row
+
+
+
+
+//logic to build the text labels
+      var textLabels = svg.selectAll(".texts")
+      .data(gridData)
+      .enter().append("g")//put in a group otherwise it will hide the text
+      .append("text")
+      .text(function(d) { return d[0]; })
+      .attr("x", function(d,i) {
+         return 50+ rectLen * (i-(Math.floor(i/rectOnRow)*rectOnRow) +1); }
+       )
+       .style("fill-opacity",0)
+       .style("fill", function(d) {return color(d[1])})
+      .style("font-size", function(d) { return Math.min(20, rectLen / this.getComputedTextLength() * 15) + "px"; })
+       .attr("dy", ".35em")
+       .attr("y", function(d,i) {
+          return 600 + rowH * Math.floor(i/rectOnRow); }) //start a bit higher or lower to where the text needs to be for the animation
+       .transition() //transition y and opacity
+       .ease(d3.easeQuad)
+      .delay(function(d, i) {
+        return i * 35;
+      })
+      .attr("y", function(d,i) {
+         return 500 + rowH * Math.floor(i/rectOnRow); })
+      .style("fill-opacity",1)
+
+//Function to handle main text
+
+// var tooltip = d3.select("body")
+//     .append("div")
+//     .style("position", "absolute")
+//     .style("z-index", "10")
+//     .style("visibility", "hidden")
+//     .style("background", "#000")
+//     .text("a simple tooltip");
+
+    d3.select("#labelDiv")
+    .html("<b>"+d.label)
+
+     /// circle hover
+     d3.select(this).transition()
+     .ease(d3.easeQuad)
+     .duration(200).attr(
+       "r" ,d.r * 1.5
+     );
+
+   }
+
+function handleMouseOut(event, d) {
+  //remove text lables
+  d3.selectAll("text").transition().style("fill-opacity",0).remove()
+     // Use D3 to select element, change color back to normal
+     d3.select(this).transition()
+     .duration(300).attr("r" ,d.r);
+
+     d3.select("#labelDiv")
+     .html("")
+   }
+
+
+////////////////////////// FORCE SIM //////////////////////
+sim = d3.forceSimulation(nodeData)
+  .alphaTarget(0.0001) // stay hot
+  .velocityDecay(0.99) // friction
+  .force('charge', d3.forceManyBody())
+  .force('attract1', d3.forceAttract()
+  .target([w/2, h/2])
+  .strength(function (d) { return d3.randomNormal(0.0,0.5)(); }))
+  .force('attract2', d3.forceAttract()
+  .target([w/2, h/2])
+  .strength(0.6))
+  .force('y', d3.forceY().strength(0.1).y(h/3))
+  .force('collide', d3.forceCollide(function (d) { return d.r + NodePadding; })
+    .strength(2))
+
+//follow the mouse around:
+if (splash == 1){  //only do this if on the spash screen
+    svg.on('mousemove', (event) => {
+    sim.force('attract2').target(d3.pointer(event))
+    ;
+    sim
+      .alphaTarget(0.1)
+      .restart();
+    })
+  };
+
+//clicking the splash screen get started button removes the splash screen and adds interactivity.
+d3.select("button").on('click', (event) => {
+  var splash = 0;
+  var splashDiv = document.getElementById("splashDiv")
+  svg.selectAll("circle")
+    .attr("pointer-events", "all");
+  splashDiv.style.visibility = "hidden" //remove the splashscreen intro text
+  splashDiv.style.opacity = 0 // transition opacity then remove
+  console.log(splash)
+  svg.on('mousemove', (event) => {null}) //remove mouse movements
+  sim.force('x', d3.forceX().strength(0.2).x(function(d) {
+    return d.x1;
+  }))
+  .force('attract2', d3.forceAttract()
+  .strength(0))
+  .force('attract1', d3.forceAttract()
+  .strength(0));
+  sim
+  .alphaTarget(0.1) // stay hot
+  .velocityDecay(0.5) // friction
+    .restart();
+});
+
+
+
+
+sim.on("tick", () =>{
+  blipElements
+    .attr("transform", (d) => `translate(${d.xYanked ?? d.x},${d.y ?? d.y})`)
+});
+
+
+
+}
+doSVG();
+
+
+    </script>
+  </body>
+</html>
