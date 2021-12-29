@@ -166,9 +166,10 @@ function handleMouseOver(event, d) {
          return 500 + rowH * Math.floor(i/rectOnRow); })
       .style("fill-opacity",1)
 
-
+////////////LABEL DIV ///////////
     d3.select("#labelDiv")
     .html("<b>"+d.label)
+    .style("color",ScoreScale(d.score))
 
      /// circle hover
      d3.select(this).transition()
