@@ -132,8 +132,9 @@ function doSVG() {
 
 function handleMouseOver(event, d) {
     // grid data is an array of objects, one containing a word and the other a score
-     var gridData = d3.zip(textData[d.index].name,textData[d.index].score)
-
+     var gridData = d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
+                    .slice(0, 50)
+                    .sort((a, b) => d3.descending(a[1], b[1]))
      var rectLen = 300; // the length of the text containers
      var rowH = 40; // the hight of the row containers for text
      rectOnRow = Math.floor((w)/rectLen) // determins how many text items can fit on each row
