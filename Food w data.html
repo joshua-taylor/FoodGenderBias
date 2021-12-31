@@ -147,11 +147,19 @@ function handleMouseOver(event, d) {
      XstartingPoint = (w - rectOnRow*rectLen) / 2 // get a starting point to ensure the text items are always centred
      YstartingPoint = 1.6 // ratio of where to place text in y domain, to manually adjust for now...
      NumberOfTextLabels = Math.floor((h*(1- 1/1.6))/rowH * rectOnRow)
-     console.log(NumberOfTextLabels)
+
     // grid data is an array of objects, one containing a word and the other a score
-     var gridData = d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
-                    .slice(0, NumberOfTextLabels)
-                    .sort((a, b) => d3.descending(a[1], b[1]))
+    // grid data is an array of objects, one containing a word and the other a score
+      if (d.score > 0.5){ //change the sort order based on the score
+                      var gridData =d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
+                      .slice(0, NumberOfTextLabels)
+                      .sort((a, b) => d3.descending(a[1], b[1])) 
+                    } else {
+                      var gridData =d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
+                      .slice(0, NumberOfTextLabels)
+                      .sort((a, b) => d3.ascending(a[1], b[1]))
+                    }
+
 
 
 //logic to build the text labels
