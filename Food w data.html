@@ -83,8 +83,8 @@
 
 const wPad = 50
 const hPad = 200
-var w = $(window).width()-wPad;
-var h = $(window).height()-hPad;
+var w = Math.max($(window).width()-wPad,400) //ensure that there is a min width of 400 pixels
+var h = Math.max($(window).height()-hPad,800) //min height of 800 px
 var splash = 1
 
 const NodePadding = 5
