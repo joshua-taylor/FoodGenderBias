@@ -126,8 +126,8 @@ function doSVG() {
     .data(nodeData)
     .enter()
     .append("circle")
-    .attr("cx",d=> d.x)
-    .attr("cy",d=> d.y)
+    .attr("cx",d=> 0)
+    .attr("cy",d=> 0)
     .attr("r",d=>SizeScale(d.freq))
     .attr("fill",d=> color(d.score))
     .attr("transform", (d) => `translate(${d.x},${d.y})`)
@@ -181,8 +181,8 @@ function handleMouseOver(event, d) {
 
 ////////////LABEL DIV ///////////
     d3.select("#labelDiv")
-    .html("<b>"+d.label)
-    .style("color",ScoreScale(d.score))
+    .html(d.label)
+    .style("color", color(d.score))
 
      /// circle hover
      d3.select(this).transition()
