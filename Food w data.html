@@ -135,7 +135,50 @@ function doSVG() {
     .on("mouseout", handleMouseOut)
     .attr("pointer-events", "none")//disable for now
 ;
+////////////// Add legend: circles
+var valuesToShow = [10, 500, 1000]
+var xCircle = 50
+var xLabel = 100
+var yCircle = 70
+function addLegend(){
+  svg
+    .selectAll("legend")
+    .data(valuesToShow)
+    .enter()
+    .append("circle")
+      .attr("cx", xCircle)
+      .attr("cy", function(d){ return yCircle - SizeScale(d) } )
+      .attr("r", function(d){ return SizeScale(d) })
+      .style("fill", "none")
+      .attr("stroke", "white")
 
+  // Add legend: segments
+  svg
+    .selectAll("legend")
+    .data(valuesToShow)
+    .enter()
+    .append("line")
+      .attr('x1', function(d){ return xCircle + SizeScale(d) } )
+      .attr('x2', xLabel)
+      .attr('y1', function(d){ return yCircle - SizeScale(d) } )
+      .attr('y2', function(d){ return yCircle - SizeScale(d) } )
+      .attr('stroke', 'white')
+      .style('stroke-dasharray', ('2,2'))
+
+  // Add legend: labels
+  svg
+    .selectAll("legend")
+    .data(valuesToShow)
+    .enter()
+    .append("text")
+      .attr('x', xLabel)
+      .attr('y', function(d){ return yCircle - SizeScale(d) } )
+      .text( function(d){ return d } )
+      .style("font-size", 10)
+      .style("fill", 'white')
+      .attr('alignment-baseline', 'middle')
+}
+  //////////////end of ledgend
 
 ///////////////////// MOUSE HOVER Create Event Handlers for mouse
 
@@ -146,18 +189,19 @@ function handleMouseOver(event, d) {
      rectOnRow = Math.floor((w)/rectLen) // determins how many text items can fit on each row
      XstartingPoint = (w - rectOnRow*rectLen) / 2 // get a starting point to ensure the text items are always centred
      YstartingPoint = 1.6 // ratio of where to place text in y domain, to manually adjust for now...
-     NumberOfTextLabels = Math.floor((h*(1- 1/1.6))/rowH * rectOnRow)
-
-    // grid data is an array of objects, one containing a word and the other a score
+     NumberOfTextLabels = Math.floor((h*(1- 1/1.6))/rowH * rectOnRow) 
+     console.log(NumberOfTextLabels)
     // grid data is an array of objects, one containing a word and the other a score
       if (d.score > 0.5){ //change the sort order based on the score
                       var gridData =d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
-                      .slice(0, NumberOfTextLabels)
+                      .slice(0, NumberOfTextLabels*1.2)
                       .sort((a, b) => d3.descending(a[1], b[1])) 
+                      .slice(0, NumberOfTextLabels)
                     } else {
                       var gridData =d3.shuffle(d3.zip(textData[d.index].name,textData[d.index].score))
-                      .slice(0, NumberOfTextLabels)
+                      .slice(0, NumberOfTextLabels*1.2)
                       .sort((a, b) => d3.ascending(a[1], b[1]))
+                      .slice(0, NumberOfTextLabels)
                     }
 
 
@@ -243,6 +287,7 @@ if (splash == 1){  //only do this if on the spash screen
 
 //clicking the splash screen get started button removes the splash screen and adds interactivity.
 d3.select("button").on('click', (event) => {
+  addLegend(); //add the ledgend
   var splash = 0;
   var splashDiv = document.getElementById("splashDiv")
   svg.selectAll("circle")
