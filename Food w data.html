@@ -110,8 +110,8 @@ color = d3.scaleLinear().domain([0,1]) //need to change this to align with data 
   .interpolate(d3.interpolateLab)
   .range([d3.rgb("#2c8ee5"), d3.rgb('#f0b931')]);
 
-var SizeRange = d3.extent(nodeData, d => Math.abs(d.score-0.5))
-var SizeScale = d3.scaleLinear().domain(SizeRange).range([5,15])
+var SizeRange = d3.extent(nodeData, d => d.freq)
+var SizeScale = d3.scaleLinear().domain(SizeRange).range([10,50])
 
 var ScoreRange = d3.extent(nodeData, d => d.score)
 var ScoreScale = d3.scaleLinear().domain(ScoreRange).range([0,1])
@@ -128,7 +128,7 @@ function doSVG() {
     .append("circle")
     .attr("cx",d=> d.x)
     .attr("cy",d=> d.y)
-    .attr("r",d=>SizeScale(d.score))
+    .attr("r",d=>SizeScale(d.freq))
     .attr("fill",d=> color(d.score))
     .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .on("mouseover", handleMouseOver)
@@ -188,7 +188,7 @@ function handleMouseOver(event, d) {
      d3.select(this).transition()
      .ease(d3.easeQuad)
      .duration(200).attr(
-       "r" ,SizeScale(d.score) * 1.5
+       "r" ,SizeScale(d.freq) * 1.5
      );
 
    }
@@ -200,7 +200,7 @@ function handleMouseOut(event, d) {
   d3.selectAll("text").transition().style("fill-opacity",0).remove()
      // Use D3 to select element, change color back to normal
      d3.select(this).transition()
-     .duration(300).attr("r" ,SizeScale(d.score));
+     .duration(300).attr("r" ,SizeScale(d.freq));
 
      d3.select("#labelDiv")
      .html("")
@@ -219,7 +219,7 @@ sim = d3.forceSimulation(nodeData)
   .target([w/2, h/2])
   .strength(0.6))
   .force('y', d3.forceY().strength(0.1).y(h/3))
-  .force('collide', d3.forceCollide(function (d) { return SizeScale(d.score) + NodePadding; })
+  .force('collide', d3.forceCollide(function (d) { return SizeScale(d.freq) + NodePadding; })
     .strength(2))
 
 //follow the mouse around:
