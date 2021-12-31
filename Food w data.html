@@ -128,7 +128,7 @@ function doSVG() {
     .append("circle")
     .attr("cx",d=> d.x)
     .attr("cy",d=> d.y)
-    .attr("r",d=>SizeScale(d.freq))
+    .attr("r",d=>SizeScale(d.score))
     .attr("fill",d=> color(d.score))
     .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .on("mouseover", handleMouseOver)
