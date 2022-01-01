@@ -117,7 +117,11 @@ const nodeData = {{nodeData}}
 const textData = {{textData}}
 
 
-color = d3.scaleLinear().domain([0,1]) //need to change this to align with data min and max...
+colorCircle = d3.scaleLinear().domain([0,0.4,0.6,1]) 
+  .interpolate(d3.interpolateLab)
+  .range([d3.rgb("#2c8ee5"), d3.rgb("#003434 "),d3.rgb("#003434 "),d3.rgb('#f0b931')]);
+
+colorText = d3.scaleLinear().domain([0,1]) //used for text labels
   .interpolate(d3.interpolateLab)
   .range([d3.rgb("#2c8ee5"), d3.rgb('#f0b931')]);
 
@@ -140,7 +144,7 @@ function doSVG() {
     .attr("cx",d=> 0)
     .attr("cy",d=> 0)
     .attr("r",d=>SizeScale(d.freq))
-    .attr("fill",d=> color(d.score))
+    .attr("fill",d=> colorCircle(d.score))
     // .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .on("mouseover", handleMouseOver)
     .on("mouseout", handleMouseOut)
@@ -310,7 +314,7 @@ function handleMouseOver(event, d) {
          return  rectLen * (i-(Math.floor(i/rectOnRow)*rectOnRow) +1) -rectLen +XstartingPoint; }
        )
        .style("fill-opacity",0)
-       .style("fill", function(d) {return color(d[1]-0.15)}) //for balancing the text colour slightly
+       .style("fill", function(d) {return colorText(d[1]-0.15)}) //for balancing the text colour slightly
       .style("font-size", function(d) { return Math.min(20, rectLen / this.getComputedTextLength() * 15) + "px"; })
        .attr("dy", ".35em")
        .attr("y", function(d,i) {
@@ -338,7 +342,7 @@ svg
 ////////////LABEL DIV ///////////
     d3.select("#labelDiv")
     .html(d.label)
-    .style("color", color(d.score))
+    .style("color", colorCircle(d.score))
 
      /// circle hover
      d3.select(this).transition()
