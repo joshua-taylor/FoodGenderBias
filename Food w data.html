@@ -362,9 +362,9 @@ sim = d3.forceSimulation(nodeData)
   .force('attract2', d3.forceAttract()
   .target([w/2, h*bubbleYStartingPoint])
   .strength(0.6))
-  .force('y', d3.forceY().strength(0.8).y(h*bubbleYStartingPoint))
+  .force('y', d3.forceY().strength(1).y(h*bubbleYStartingPoint))
   .force('collide', d3.forceCollide(function (d) { return SizeScale(d.freq) + NodePadding; })
-    .strength(2))
+    .strength(1))
 
 //follow the mouse around:
 if (splash == 1){  //only do this if on the spash screen
