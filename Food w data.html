@@ -79,12 +79,15 @@
 
 <div class="container-fluid text-center">
   <div>
-    <h1 class="header">Lorum ipsum2</h1>
+    <h1 class="header">Gender Bias in Restaurant Names</h1>
   </div>
   <div class="row content">
     <div id="labelDiv" class="divLabel" ></div>
     <div id="splashDiv" class="divInTheMiddle">
-      <p class="textTransparentBackground">This is a splash screen for introducing the vis. Click the button below to get started.</p>
+      <p class="textTransparentBackground">This interactive visualisation shows how certain words are associated with male and female restaurant names.<br>
+Each circle represents a word that occurs in different restaurant names. Words on the left are more associated with female restaurants and words on the right, male restaurants.<br>
+Click on the circles to show a selection of restaurant names which contain the word the circle represents. 
+</p>
     <button id="button" type="button" class="btn btn-outline-light btn-lg">Click to explore</button></div>
       <div id="wrapper"class="col-lg-12"></div>
 </div>
@@ -140,7 +143,7 @@ function doSVG() {
     .attr("pointer-events", "none")//disable for now
 ;
 ///////////////////// Add legend
-var valuesToShow = [10, 200, 500]
+var valuesToShow = [10, 20, 50]
 var xCircle = 50
 var xLabel = 100
 var yCircle = 70
