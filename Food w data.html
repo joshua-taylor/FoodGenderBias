@@ -44,6 +44,10 @@
         width: 40%;
         transition:  visibility 0.3s, opacity 0.3s linear;
       }
+      .legendText {
+        font-family: 'Roboto Slab', serif;
+        font-size: 10px;
+      }
       .svgText {
         font-family: 'Roboto', sans-serif;
       }
@@ -135,12 +139,20 @@ function doSVG() {
     .on("mouseout", handleMouseOut)
     .attr("pointer-events", "none")//disable for now
 ;
-////////////// Add legend: circles
-var valuesToShow = [10, 500, 1000]
+///////////////////// Add legend
+var valuesToShow = [10, 200, 500]
 var xCircle = 50
 var xLabel = 100
 var yCircle = 70
 function addLegend(){
+svg
+  .append('text')
+  .text("Bubble size represent the frequency of words")
+  .attr("class","legendText")
+  .attr('x', 25)
+  .attr('y', 20)
+  .style("fill", 'lightgrey')
+  .attr('class','legendText')
   svg
     .selectAll("legend")
     .data(valuesToShow)
@@ -150,7 +162,7 @@ function addLegend(){
       .attr("cy", function(d){ return yCircle - SizeScale(d) } )
       .attr("r", function(d){ return SizeScale(d) })
       .style("fill", "none")
-      .attr("stroke", "white")
+      .attr("stroke", "lightgrey")
 
   // Add legend: segments
   svg
@@ -160,9 +172,9 @@ function addLegend(){
     .append("line")
       .attr('x1', function(d){ return xCircle + SizeScale(d) } )
       .attr('x2', xLabel)
-      .attr('y1', function(d){ return yCircle - SizeScale(d) } )
-      .attr('y2', function(d){ return yCircle - SizeScale(d) } )
-      .attr('stroke', 'white')
+      .attr('y1', function(d){ return yCircle - SizeScale(d*2) } ) //multiplier added to adjust height to prevent overlap
+      .attr('y2', function(d){ return yCircle - SizeScale(d*2) } )
+      .attr('stroke', 'lightgrey')
       .style('stroke-dasharray', ('2,2'))
 
   // Add legend: labels
@@ -172,12 +184,85 @@ function addLegend(){
     .enter()
     .append("text")
       .attr('x', xLabel)
-      .attr('y', function(d){ return yCircle - SizeScale(d) } )
+      .attr('y', function(d){ return yCircle - SizeScale(d*2) } )
       .text( function(d){ return d } )
+      .attr("class","legendText")
       .style("font-size", 10)
-      .style("fill", 'white')
+      .style("fill", 'lightgrey')
       .attr('alignment-baseline', 'middle')
+
+//add arrows
+var arrowPoints = [[0, 0], [0, 20], [20, 10]];
+var svgDefs = svg
+    .append('defs')
+    .append('marker')
+    .attr('id', 'arrow')
+    .attr('viewBox', [0, 0, 50, 50])
+    .attr('refX', 10)
+    .attr('refY', 10)
+    .attr('markerWidth', 20)
+    .attr('markerHeight', 20)
+    .attr('orient', 'auto-start-reverse')
+    .append('path')
+    .attr('d', d3.line()(arrowPoints))
+    .attr('stroke', 'lightgrey')
+    .attr('fill', 'lightgrey')
+    ;
+//add a gradient to the lines for some styling
+// Define the gradient
+var gradient = svg.append("svg:defs")
+    .append("svg:linearGradient")
+    .attr("id", "gradient")
+    .attr("x1", "100%")
+    .attr("y1", "100%")
+    .attr("x2", "0%")
+    .attr("y2", "100%")
+    .attr("spreadMethod", "pad");
+
+// Define the gradient colors
+gradient.append("svg:stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "#a00000")
+    .attr("stop-opacity", 1);
+
+gradient.append("svg:stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "lightgrey")
+    .attr("stop-opacity", 1);
+
+// Add line for arrows
+svg
+  .append('path')
+  .attr('d', d3.line()([[20, h*0.2], [w/2.5, h*0.2]]))
+  .attr('stroke', 'lightgrey')
+  .attr('marker-start', 'url(#arrow)')
+  .attr('fill', 'none');
+svg
+  .append('path')
+  .attr('d', d3.line()([[w-20, h*0.2], [w-w/2.5, h*0.2]]))
+  .attr('stroke', 'lightgrey')
+  .attr('marker-start', 'url(#arrow)')
+  .attr('fill', 'none');
+svg
+  .append('text')
+  .text("These words appear in more 'male' restaurants")
+  .attr("class","legendText")
+  .attr('x', 25)
+  .attr('y', h*0.2-5)
+  .style("fill", 'lightgrey')
+  .attr('class','legendText')
+svg
+  .append('text')
+  .text("These words appear in more 'female' restaurants")
+  .attr("class","legendText")
+  .attr('x', w-220)
+  .attr('y', h*0.2-5)
+  .style("fill", 'lightgrey')
+  .attr('class','legendText')
+
 }
+
+
   //////////////end of ledgend
 
 ///////////////////// MOUSE HOVER Create Event Handlers for mouse
@@ -211,6 +296,7 @@ function handleMouseOver(event, d) {
       .data(gridData)
       .enter().append("g")//put in a group otherwise it will hide the text
       .append("text")
+      .attr("class","textLabel")
       .text(function(d) { return d[0]; })
       .attr("x", function(d,i) {
          return  rectLen * (i-(Math.floor(i/rectOnRow)*rectOnRow) +1) -rectLen +XstartingPoint; }
@@ -249,7 +335,7 @@ function handleMouseOver(event, d) {
 ////////////////////// MOUSE OUT /////////////////
 function handleMouseOut(event, d) {
   //remove text lables
-  d3.selectAll("text").transition().style("fill-opacity",0).remove()
+  d3.selectAll(".textLabel").transition().style("fill-opacity",0).remove()
      // Use D3 to select element, change color back to normal
      d3.select(this).transition()
      .duration(300).attr("r" ,SizeScale(d.freq));
