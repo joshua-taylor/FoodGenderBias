@@ -39,7 +39,7 @@
         font-size: 32px;
         position: absolute;
         z-index: 10;
-        top: 15%;
+        top: 25%;
         left: 30%;
         width: 40%;
         transition:  visibility 0.3s, opacity 0.3s linear;
@@ -93,7 +93,7 @@ Click on the circles to show a selection of restaurant names which contain the w
 </div>
 
 <footer class="container-fluid text-center tip">
-  <p><a href = ""><u>Josh Taylor 2021</u></a></p>
+  <p><a href = ""><u>Josh Taylor 2022</u></a></p>
 </footer>
     <script>
 
@@ -104,6 +104,7 @@ var h = Math.max($(window).height()-hPad,800) //min height of 800 px
 var splash = 1
 
 const NodePadding = 5
+
 
 
 const nodeData = {{nodeData}}
@@ -146,7 +147,8 @@ function doSVG() {
 var valuesToShow = [10, 20, 50]
 var xCircle = 50
 var xLabel = 100
-var yCircle = 70
+var yCircle = 60
+var yArrow = 80
 function addLegend(){
 svg
   .append('text')
@@ -236,13 +238,13 @@ gradient.append("svg:stop")
 // Add line for arrows
 svg
   .append('path')
-  .attr('d', d3.line()([[20, h*0.2], [w/2.5, h*0.2]]))
+  .attr('d', d3.line()([[20, yArrow], [w/2.5, yArrow]]))
   .attr('stroke', 'lightgrey')
   .attr('marker-start', 'url(#arrow)')
   .attr('fill', 'none');
 svg
   .append('path')
-  .attr('d', d3.line()([[w-20, h*0.2], [w-w/2.5, h*0.2]]))
+  .attr('d', d3.line()([[w-20, yArrow], [w-w/2.5, yArrow]]))
   .attr('stroke', 'lightgrey')
   .attr('marker-start', 'url(#arrow)')
   .attr('fill', 'none');
@@ -251,7 +253,7 @@ svg
   .text("These words appear in more 'male' restaurants")
   .attr("class","legendText")
   .attr('x', 25)
-  .attr('y', h*0.2-5)
+  .attr('y', yArrow-5)
   .style("fill", 'lightgrey')
   .attr('class','legendText')
 svg
@@ -259,7 +261,7 @@ svg
   .text("These words appear in more 'female' restaurants")
   .attr("class","legendText")
   .attr('x', w-220)
-  .attr('y', h*0.2-5)
+  .attr('y', yArrow-5)
   .style("fill", 'lightgrey')
   .attr('class','legendText')
 
@@ -274,10 +276,10 @@ function handleMouseOver(event, d) {
 
      var rectLen = 300; // the length of the text containers
      var rowH = 40; // the hight of the row containers for text
-     rectOnRow = Math.floor((w)/rectLen) // determins how many text items can fit on each row
-     XstartingPoint = (w - rectOnRow*rectLen) / 2 // get a starting point to ensure the text items are always centred
-     YstartingPoint = 1.6 // ratio of where to place text in y domain, to manually adjust for now...
-     NumberOfTextLabels = Math.floor((h*(1- 1/1.6))/rowH * rectOnRow) 
+     var rectOnRow = Math.floor((w)/rectLen) // determins how many text items can fit on each row
+     var XstartingPoint = (w - rectOnRow*rectLen) / 2 // get a starting point to ensure the text items are always centred
+     var YstartingPoint = 1.7 // ratio of where to place text in y domain, to manually adjust for now...
+     var NumberOfTextLabels = Math.floor((h*(1- 1/1.6))/rowH * rectOnRow) 
      console.log(NumberOfTextLabels)
     // grid data is an array of objects, one containing a word and the other a score
       if (d.score > 0.5){ //change the sort order based on the score
@@ -349,17 +351,18 @@ function handleMouseOut(event, d) {
 
 
 ////////////////////////// FORCE SIM //////////////////////
+var bubbleYStartingPoint = 0.3 // between 0 and 1; where the bubbles will be centred. Higher numbers will be lower on the screen
 sim = d3.forceSimulation(nodeData)
   .alphaTarget(0.0001) // stay hot
   .velocityDecay(0.99) // friction
   .force('charge', d3.forceManyBody())
   .force('attract1', d3.forceAttract()
-  .target([w/2, h/2])
+  .target([w/2, h*bubbleYStartingPoint])
   .strength(function (d) { return d3.randomNormal(0.0,0.5)(); }))
   .force('attract2', d3.forceAttract()
-  .target([w/2, h/2])
+  .target([w/2, h*bubbleYStartingPoint])
   .strength(0.6))
-  .force('y', d3.forceY().strength(0.1).y(h/3))
+  .force('y', d3.forceY().strength(0.8).y(h*bubbleYStartingPoint))
   .force('collide', d3.forceCollide(function (d) { return SizeScale(d.freq) + NodePadding; })
     .strength(2))
 
