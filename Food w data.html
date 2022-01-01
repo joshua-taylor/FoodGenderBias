@@ -17,9 +17,9 @@
     <style>
 
       body {
-        font-family: 'Roboto Slab', serif;
+        font-family: 'Roboto', serif;
         font-size: 16px;
-        font-weight: 300;
+        font-weight: 200;
         color: white;
         margin: 0;
         background: #0F2027;  /* fallback for old browsers */
@@ -35,8 +35,9 @@
         transition:  visibility 0.3s, opacity 0.3s linear;
       }
       .divLabel {
-        font-family: 'Roboto', sans-serif;
-        font-size: 32px;
+        font-family: 'Roboto Slab', sans-serif;
+        font-size: 38px;
+        font-weight: 300;
         position: absolute;
         z-index: 10;
         top: 25%;
@@ -45,7 +46,7 @@
         transition:  visibility 0.3s, opacity 0.3s linear;
       }
       .legendText {
-        font-family: 'Roboto Slab', serif;
+        font-family: 'Roboto', serif;
         font-size: 10px;
       }
       .svgText {
@@ -57,12 +58,13 @@
       }
       .subheader{
         font-family: 'Roboto Slab', serif;
-        font-size: 24px;
-        color: 'lightgrey';
-      }
-      .footer{
-        font-family: 'Newsreader', serif;
         font-size: 16px;
+        color: lightgrey;
+      }
+      footer{
+        font-family: 'Roboto Slab', serif;
+        font-size: 14px;
+        color:  lightgrey;
       }
       .textTransparentBackground{
         /* backdrop-filter: blur(20px);
@@ -79,13 +81,14 @@
 
 <div class="container-fluid text-center">
   <div>
-    <h1 class="header">Gender Bias in Restaurant Names</h1>
+    <h1 class="header">Gender Bias</h1>
+    <p class="subheader">What an analysis of all UK restaurant names can tell us about engrained gender bias</p>
   </div>
   <div class="row content">
     <div id="labelDiv" class="divLabel" ></div>
     <div id="splashDiv" class="divInTheMiddle">
-      <p class="textTransparentBackground">This interactive visualisation shows how certain words are associated with male and female restaurant names.<br>
-Each circle represents a word that occurs in different restaurant names. Words on the left are more associated with female restaurants and words on the right, male restaurants.<br>
+      <p class="textTransparentBackground">This interactive visualisation shows how certain words are associated with male and female restaurant names.<br><br>
+Each circle represents a word that occurs in different restaurant names. Words on the left are more associated with female restaurants and words on the right, male restaurants.<br><br>
 Click on the circles to show a selection of restaurant names which contain the word the circle represents. 
 </p>
     <button id="button" type="button" class="btn btn-outline-light btn-lg">Click to explore</button></div>
@@ -103,8 +106,7 @@ var w = Math.max($(window).width()-wPad,400) //ensure that there is a min width 
 var h = Math.max($(window).height()-hPad,800) //min height of 800 px
 var splash = 1
 
-const NodePadding = 5
-
+const NodePadding = 8
 
 
 const nodeData = {{nodeData}}
@@ -144,18 +146,18 @@ function doSVG() {
     .attr("pointer-events", "none")//disable for now
 ;
 ///////////////////// Add legend
-var valuesToShow = [10, 20, 50]
+var valuesToShow = [10, 40, 90]
 var xCircle = 50
 var xLabel = 100
 var yCircle = 60
-var yArrow = 80
+var yArrow = 95
 function addLegend(){
 svg
   .append('text')
   .text("Bubble size represent the frequency of words")
   .attr("class","legendText")
   .attr('x', 25)
-  .attr('y', 20)
+  .attr('y', 10)
   .style("fill", 'lightgrey')
   .attr('class','legendText')
   svg
@@ -260,7 +262,7 @@ svg
   .append('text')
   .text("These words appear in more 'female' restaurants")
   .attr("class","legendText")
-  .attr('x', w-220)
+  .attr('x', w-260)
   .attr('y', yArrow-5)
   .style("fill", 'lightgrey')
   .attr('class','legendText')
@@ -396,7 +398,7 @@ d3.select("button").on('click', (event) => {
   .strength(0));
   sim
   .alphaTarget(0.1) // stay hot
-  .velocityDecay(0.87) // friction
+  .velocityDecay(0.91) // friction
     .restart();
 });
 
