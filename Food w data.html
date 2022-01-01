@@ -47,7 +47,10 @@
       }
       .legendText {
         font-family: 'Roboto', serif;
-        font-size: 10px;
+        font-size: 12px;
+      }
+      .textLabel{
+        font-size: 12px;
       }
       .svgText {
         font-family: 'Roboto', sans-serif;
@@ -87,7 +90,7 @@
   <div class="row content">
     <div id="labelDiv" class="divLabel" ></div>
     <div id="splashDiv" class="divInTheMiddle">
-      <p class="textTransparentBackground">This interactive visualisation shows how certain words are associated with male and female restaurant names.<br><br>
+      <p class="textTransparentBackground">This interactive visualisation shows how certain words are associated with male (yellow) and female (blue) restaurant names.<br><br>
 Each circle represents a word that occurs in different restaurant names. Words on the left are more associated with female restaurants and words on the right, male restaurants.<br><br>
 Click on the circles to show a selection of restaurant names which contain the word the circle represents. 
 </p>
@@ -116,6 +119,7 @@ const nodeData = {{nodeData}}
 // to update with real data..
 const textData = {{textData}}
 
+
 color = d3.scaleLinear().domain([0,1]) //need to change this to align with data min and max...
   .interpolate(d3.interpolateLab)
   .range([d3.rgb("#2c8ee5"), d3.rgb('#f0b931')]);
@@ -140,7 +144,7 @@ function doSVG() {
     .attr("cy",d=> 0)
     .attr("r",d=>SizeScale(d.freq))
     .attr("fill",d=> color(d.score))
-    .attr("transform", (d) => `translate(${d.x},${d.y})`)
+    // .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .on("mouseover", handleMouseOver)
     .on("mouseout", handleMouseOut)
     .attr("pointer-events", "none")//disable for now
@@ -252,7 +256,7 @@ svg
   .attr('fill', 'none');
 svg
   .append('text')
-  .text("These words appear in more 'male' restaurants")
+  .text("More masculine words")
   .attr("class","legendText")
   .attr('x', 25)
   .attr('y', yArrow-5)
@@ -260,9 +264,9 @@ svg
   .attr('class','legendText')
 svg
   .append('text')
-  .text("These words appear in more 'female' restaurants")
+  .text("More femanine words")
   .attr("class","legendText")
-  .attr('x', w-260)
+  .attr('x', w-140)
   .attr('y', yArrow-5)
   .style("fill", 'lightgrey')
   .attr('class','legendText')
@@ -322,6 +326,15 @@ function handleMouseOver(event, d) {
       .attr("y", function(d,i) {
          return h/YstartingPoint + rowH * Math.floor(i/rectOnRow); })
       .style("fill-opacity",1)
+
+svg
+  .append('text')
+  .text("A selection of restaurant names with this word:")
+  .attr("class","textLabel")
+  .attr('x', 10)
+  .attr('y', h/(YstartingPoint)-rowH+5)
+  .style("fill", 'lightgrey')
+
 
 
 ////////////LABEL DIV ///////////
